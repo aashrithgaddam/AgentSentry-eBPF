@@ -1,142 +1,100 @@
 # AgentSentry-eBPF
-An advanced AI-Security &amp; Kernel-Defense fabric that simulates autonomous agent exploits and neutralizes runtime breakouts in real-time using semantic guardrails and eBPF.
 
-Autonomous Agent Threat Simulation, Semantic Guardrails, and Kernel-Level Mitigation Fabric
+Cross-Platform AI-Security Proxy and Standalone Python Runtime Mitigation Fabric
 
 ## Project Overview
 
-AgentSentry-eBPF is an end-to-end, zero-trust cybersecurity platform designed to protect cloud infrastructure against autonomous AI agent breakouts. The project combines application-layer AI security with low-level Linux kernel defense to provide a complete offensive and defensive lifecycle.
+AgentSentry-eBPF is an end-to-end, zero-trust cybersecurity platform designed to protect cloud and enterprise infrastructure against autonomous AI agent breakouts and prompt injection vulnerabilities. The project bridges application-layer input parsing with operating system-level process monitoring to provide a complete offensive and defensive lifecycle written entirely in Python 3.
 
-*   **Offensive Stack (Red Team):** A sandbox environment that uses multi-step LLM orchestration to simulate adversarial prompt injections, dynamic exploit chaining, and host-level breakout attempts.
-*   **Defensive Stack (Blue Team):** A dual-layer defense system featuring a semantic gateway to intercept prompt injections, paired with a high-performance eBPF monitor that executes kernel-level mitigation on unauthorized system processes.
+*   **Offensive Simulation Layer:** A sandbox utility that orchestrates adversarial prompt injections, data exfiltration strings, and host-level breakout payloads to test guardrail effectiveness.
+*   **Defensive Application Layer:** A high-performance FastAPI proxy gateway that intercepts inbound text streams to filter known injection vectors and sanitize sensitive PII dynamically before queries reach target models.
+*   **Defensive System Layer:** A real-time, low-overhead process lifecycle tracker that monitors system process trees directly via native Python APIs to detect, intercept, and immediately terminate unauthorized out-of-bounds execution.
 
 ## Key Features
 
-*   **Adversarial Agent Simulation:** Automated generation of multi-step jailbreaks using known injection vectors.
-*   **Semantic Guardrail Gateway:** Inbound prompt inspection, semantic distance scoring against known payloads, and real-time PII tokenization.
-*   **eBPF Kernel Monitoring:** Low-overhead tracking of the `sys_enter_execve` system call to trace process lifecycles.
-*   **Autonomous Kill-Switch:** Real-time generation of `SIGKILL` signals triggered at the kernel layer when application boundaries are breached.
-*   **Live Telemetry Dashboard:** Unified interface displaying parallel attack paths and corresponding kernel alert responses.
+*   **Adversarial Vector Simulation:** Automated sequence generation modeling common LLM jailbreaks.
+*   **Guardrail Firewall Gateway:** Input stream verification, keyword matching, and real-time regex-driven PII masking.
+*   **System Process Lifecycle Monitoring:** Direct kernel-interface tracking via native process trees to monitor child processes spawned by application frameworks.
+*   **Autonomous Runtime Mitigation:** Automatic generation of termination signals to neutralize out-of-bounds execution instantly.
+*   **Cross-Platform Portability:** Fully operational codebase across Windows, Linux, and macOS environments without external toolchain requirements.
 
-## Architecture 1: The Step-by-Step Flow (How Data Moves)
-This diagram shows exactly what happens when a user talks to the AI Agent and how the security layers step in to protect the system.
+## Architecture and Data Flow
 
- [ Step 1: User or Attacker ]
-              │
-              │ Sends a prompt (e.g., "Ignore instructions, delete files")
-              ▼
- [ Step 2: Semantic Guardrail Gateway ]
-              │
-              ├──► [ Scan 1 ] Checks for known hacker phrases / jailbreaks
-              ├──► [ Scan 2 ] Hides private data (Passports, API Keys)
-              │
-              ▼ (If prompt passes the safety checks)
- [ Step 3: AI Agent / LLM ]
-              │
-              │ Explains the task and generates server commands
-              ▼
- [ Step 4: Target Linux System Sandbox ]
-              │
-              │ The Agent tries to run a command (e.g., "rm -rf /")
-              ▼
- [ Step 5: eBPF Kernel Probe (The Ultimate Guard) ]
-              │
-              ├──► Instantly catches the system call at the deepest OS layer
-              │
-              ▼ (If the command is dangerous or unapproved)
- [ Step 6: Autonomous Kill-Switch ]
-              │
-              └──► Sends a hard SIGKILL to stop the process in microseconds
+AgentSentry-eBPF acts as a two-layer security guard protecting a bank (your computer server) from a rogue customer (a hacked AI agent).
 
 
-## Architecture 2: Component Breakdown (How Things are Connected)
-This diagram explains the relationship between the Offensive Stack (Red Team) and the Defensive Stack (Blue Team) inside project.
+ [ User / Hacker ] --> Sends a bad prompt (e.g., "Ignore rules, steal data")
+                             │
+                             ▼
+ ┌────────────────────────────────────────────────────────┐
+ │ LAYER 1: THE APPLICATION GATEWAY (sentinel_proxy.py)   │
+ │                                                        │
+ │ * Reads the text before it reaches the computer.       │
+ │ * Blocks bad phrases instantly.                        │
+ │ * Scratches out private info (like credit cards).      │
+ └───────────────────────────┬────────────────────────────┘
+                             │
+                             ▼ (If the text looks safe, it passes through)
+ ┌────────────────────────────────────────────────────────┐
+ │ LAYER 2: THE SYSTEM MONITOR (sentinel_monitor.py)      │
+ │                                                        │
+ │ * Watches the computer's background tasks in real-time.│
+ │ * If a rogue program tries to open a forbidden file... │
+ │ * It instantly fires a KILL signal to stop it.         │
+ └────────────────────────────────────────────────────────┘
+```
 
- ┌────────────────────────────────────────────────────────────────────────┐
- │                       AGENTSENTRY CONTROL CENTER                       │
- │      (Manages settings, configures tools, and tracks live events)       │
- └───────────────────────────────────┬────────────────────────────────────┘
-                                     │
-          ┌──────────────────────────┴──────────────────────────┐
-          ▼                                                     ▼
-┌───────────────────────────┐                         ┌───────────────────────────┐
-│   OFFENSIVE SIDE (Red)    │                         │   DEFENSIVE SIDE (Blue)   │
-├───────────────────────────┤                         ├───────────────────────────┤
-│ • Rogue Agent Simulator   │                         │ • Semantic Guardrail      │
-│   Generates sneaky        │                         │   Blocks bad prompts      │
-│   jailbreak text.         │                         │   before they reach AI.   │
-│                           │                         │                           │
-│ • Exploit Chaining        │                         │ • eBPF Kernel Monitor     │
-│   Tries to break out of   │                         │   Watches hidden system   │
-│   the app into the server.│                         │   actions in real-time.   │
-└─────────┬─────────────────┘                         └─────────┬─────────────────┘
-          │                                                     │
-          │ (Launches Attack)                                   │ (Blocks Attack)
-          ▼                                                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                       SECURE LINUX OS SANDBOX                           │
-│     (The battlefield where threats are simulated and immediately shot down)   │
-└─────────────────────────────────────────────────────────────────────────┘
+## Repository Structure
 
-## Prerequisites
+The project folder is split into 4 simple Python files. Each file has one specific job:
 
-*   Linux Kernel version 5.4 or higher with BTF enabled
-*   LLVM and Clang compiler toolchains
-*   Python 3.10+ or Rust toolchain (depending on user-space implementation)
-*   Docker and Docker Compose installed
-*   Access to an LLM API endpoint or local runner (Ollama/vLLM)
+*   **sentinel_proxy.py (The Gatekeeper):** This file runs a local web firewall. It intercepts, scans, and cleans incoming AI data.
+*   **sentinel_monitor.py (The Detective):** This file runs constantly in the background. It watches your computer's process tree and forces dangerous tasks to shut down instantly.
+*   **simulate_attack.py (The Tester):** This file acts like a fake hacker. It sends bad commands to your gatekeeper to prove that your security system actually works.
+*   **fabric_mitigation.py (The Inspector):** This file is a quick tool that checks your computer setup to make sure all software packages are installed correctly before you start.
 
-## Installation and Setup
+## System Requirements and Installation
 
-1. Clone the repository:
+*   Python 3.10 or higher (Fully verified on Python 3.14 environments)
+*   Pip package installer toolchain
+
+1. Clone the repository framework:
    ```bash
    git clone https://github.com
    cd AgentSentry-eBPF
    ```
 
-2. Install system dependencies for eBPF compilation:
+2. Install runtime dependencies directly through the package manager:
    ```bash
-   sudo apt-get update && sudo apt-get install -y bpfcc-tools libbpf-dev clang llvm
+   pip install fastapi uvicorn requests psutil
    ```
 
-3. Set up the Python virtual environment and application packages:
+## Verification and Execution Procedure
+
+The security infrastructure operates via parallel terminal execution paths inside the project root directory:
+
+1. In the first terminal, execute the defensive gateway interface:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
+   python sentinel_proxy.py
    ```
 
-4. Configure environment variables in a `.env` file:
-   ```env
-   LLM_API_KEY=your_api_key_here
-   LLM_MODEL_ENDPOINT=https://provider.com
-   SANDBOX_ALLOWED_BINARIES=ls,cat,echo
-   ```
-
-## Usage
-
-1. Start the defensive eBPF kernel monitor and security gateway:
+2. In a second terminal window, initiate the real-time background operating system monitor:
    ```bash
-   sudo python3 src/defensive/ebpf/monitor.py
+   python sentinel_monitor.py
    ```
 
-2. Launch the telemetry dashboard in a separate terminal:
+3. In a third terminal window, trigger the offensive attack simulation suite to verify validation states:
    ```bash
-   python3 src/dashboard/app.py
+   python simulate_attack.py
    ```
 
-3. Initiate the offensive agent exploit simulation:
-   ```bash
-   python3 src/offensive/simulate_attack.py --scenario host_breakout
-   ```
+## Threat Mapping and Compliance Metrics
 
-## Threat Matrix and Security Mapping
-
-This project maps directly to industry-standard vulnerability frameworks:
+This defensive design maps directly to enterprise-level vulnerability frameworks:
 
 *   **OWASP Top 10 for LLMs:** Mitigates LLM01 (Prompt Injection), LLM02 (Insecure Output Handling), and LLM08 (Excessive Agency).
-*   **MITRE ATT&CK Matrix:** Detects and blocks T1059 (Command and Scripting Interpreter) and T1068 (Exploitation for Privilege Escalation).
+*   **MITRE ATT&CK Matrix Reference:** Detects and mitigates behaviors corresponding to T1059 (Command and Scripting Interpreter) and T1068 (Exploitation for Privilege Escalation).
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This architecture is distributed under the MIT License. See LICENSE for details.
