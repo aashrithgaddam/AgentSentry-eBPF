@@ -22,6 +22,7 @@ AgentSentry-eBPF is an end-to-end, zero-trust cybersecurity platform designed to
 
 AgentSentry-eBPF acts as a two-layer security guard protecting a bank (your computer server) from a rogue customer (a hacked AI agent).
 
+```text
 
  [ User / Hacker ] --> Sends a bad prompt (e.g., "Ignore rules, steal data")
                              │
